@@ -1,0 +1,4 @@
+".\Objects\timer.obj",
+".\Objects\lcd.obj" 
+TO ".\Objects\timer" 
+PRINT(".\Listings\timer.m51") RAMSIZE(256) 

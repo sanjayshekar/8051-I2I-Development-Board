@@ -1,0 +1,112 @@
+C51 COMPILER V9.57.0.0   TIMER                                                             05/09/2019 12:42:23 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE TIMER
+OBJECT MODULE PLACED IN .\Objects\timer.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE timer.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\tim
+                    -er.lst) TABS(2) OBJECT(.\Objects\timer.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include "prototype.h"
+   3          
+   4          char temp;
+   5          int temp2=0;
+   6          char hr=11;
+   7          char min=59;
+   8          char sec=56;
+   9          char count=0;
+  10          
+  11          int main()
+  12          {
+  13   1        lcdInit();
+  14   1        lcdCmd(0x82);
+  15   1        lcdPrint("digital clock");
+  16   1        TMOD=0x01;
+  17   1        TR0=1;
+  18   1        lcdCmd(0XC8);
+  19   1        lcdPrint("Am");
+  20   1        
+  21   1        while(1)
+  22   1        {
+  23   2          while(TF0==0);
+  24   2          {
+  25   3            TF0=0;
+  26   3            count++;
+  27   3            if(count==14)
+  28   3            {
+  29   4              count=0;
+  30   4              sec++;
+  31   4              if(sec==60)
+  32   4              {
+  33   5                sec=0;
+  34   5                min++;
+  35   5                if(min==60)
+  36   5                {
+  37   6                  min=0;
+  38   6                  hr++;
+  39   6                  if(hr==13)
+  40   6                  {
+  41   7                    hr=1;
+  42   7                  }
+  43   6                  if(hr==12)
+  44   6                  {
+  45   7                    if(temp2==0)
+  46   7                    {
+  47   8                      lcdPrint("Pm"); 
+  48   8                      temp2=~temp2;
+  49   8                    } 
+  50   7                  }
+  51   6                  if(temp2==1)
+  52   6                  {
+  53   7                    lcdPrint("Am");
+  54   7                    temp2=~temp2;
+C51 COMPILER V9.57.0.0   TIMER                                                             05/09/2019 12:42:23 PAGE 2   
+
+  55   7                  }
+  56   6                } 
+  57   5              }
+  58   4            }
+  59   3          display();  
+  60   3          }
+  61   2        }
+  62   1      }
+  63          
+  64          
+  65          void display(void)
+  66          {
+  67   1        
+  68   1        lcdCmd(0xC0);
+  69   1        temp=hr/10;
+  70   1        lcdData(temp+48);
+  71   1        temp=hr%10;
+  72   1        lcdData(temp+48);
+  73   1        lcdData(':');
+  74   1        
+  75   1        temp=min/10;
+  76   1        lcdData(temp+48);
+  77   1        temp=min%10;
+  78   1        lcdData(temp+48);
+  79   1        lcdData(':');
+  80   1        
+  81   1        temp=sec/10;
+  82   1        lcdData(temp+48);
+  83   1        temp=sec%10;
+  84   1        lcdData(temp+48);
+  85   1      }
+  86          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    255    ----
+   CONSTANT SIZE    =     20    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      7    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
