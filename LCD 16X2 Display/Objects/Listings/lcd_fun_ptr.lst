@@ -1,0 +1,107 @@
+C51 COMPILER V9.57.0.0   LCD_FUN_PTR                                                       01/08/2019 12:53:45 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE LCD_FUN_PTR
+OBJECT MODULE PLACED IN .\Objects\lcd_fun_ptr.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE lcd_fun_ptr.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listin
+                    -gs\lcd_fun_ptr.lst) TABS(2) OBJECT(.\Objects\lcd_fun_ptr.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          
+   3          sbit en=P0^3;
+   4          sbit rs=P0^2;
+   5          void print_lcd(char *ptr);
+   6          void lcd_init(void);
+   7          void delay(void);
+   8          void(*fptr)(void);
+   9          
+  10          void display_data(char ver);
+  11          void display_cmd(char ver);
+  12          
+  13          
+  14          void main(void)
+  15          {
+  16   1      
+  17   1      
+  18   1      
+  19   1        void(*fptr)(void);
+  20   1        fptr=&lcd_init;
+  21   1        (*fptr)();
+  22   1        print_lcd("hello");
+  23   1        delay();
+  24   1        display_cmd(0Xc0);
+  25   1        print_lcd("banglore");
+  26   1        delay();
+  27   1        while(1);
+  28   1      
+  29   1      
+  30   1        
+  31   1        
+  32   1      }
+  33          void display_data(char ver)
+  34          {
+  35   1      P2=ver;
+  36   1      rs=1;
+  37   1      en=1;
+  38   1      delay();
+  39   1      en=0;
+  40   1        delay();
+  41   1      }
+  42          void display_cmd(char ver)
+  43          {
+  44   1      P2=ver;
+  45   1      rs=0;
+  46   1      en=1;
+  47   1      delay();
+  48   1      en=0;
+  49   1      delay();
+  50   1      }
+  51          
+  52          
+  53          
+  54          void delay(void)
+C51 COMPILER V9.57.0.0   LCD_FUN_PTR                                                       01/08/2019 12:53:45 PAGE 2   
+
+  55          {
+  56   1      int i;
+  57   1      for(i=0;i<5000;i++);
+  58   1      }
+  59          
+  60          
+  61          
+  62          void lcd_init(void)
+  63          {
+  64   1        display_cmd(0x38);
+  65   1        display_cmd(0x01);
+  66   1        display_cmd(0x80);
+  67   1        
+  68   1          display_cmd(0x0E);
+  69   1        
+  70   1        
+  71   1      
+  72   1      }
+  73          void print_lcd(char *ptr)
+  74          {
+  75   1        while(*ptr != '\0')
+  76   1        {
+  77   2          display_data(*ptr);
+  78   2          ptr++;
+  79   2        }
+  80   1      } 
+  81          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    136    ----
+   CONSTANT SIZE    =     15    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

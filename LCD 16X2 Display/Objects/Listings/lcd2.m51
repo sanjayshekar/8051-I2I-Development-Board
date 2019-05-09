@@ -1,0 +1,180 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    01/08/2019  12:53:45  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\lcd_fun_ptr.obj TO .\Objects\lcd2 PRINT (.\Listings\lcd2.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\lcd_fun_ptr.obj (LCD_FUN_PTR)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?CLDPTR)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?ICALL)
+
+
+LINK MAP OF MODULE:  .\Objects\lcd2 (LCD_FUN_PTR)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0003H     UNIT         ?DT?LCD_FUN_PTR
+            DATA    000BH     0003H     UNIT         _DATA_GROUP_
+            IDATA   000EH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     07FDH                  *** GAP ***
+            CODE    0800H     0026H     UNIT         ?PR?MAIN?LCD_FUN_PTR
+            CODE    0826H     0023H     UNIT         ?PR?_PRINT_LCD?LCD_FUN_PTR
+            CODE    0849H     001FH     UNIT         ?C?LIB_CODE
+            CODE    0868H     0014H     UNIT         ?PR?LCD_INIT?LCD_FUN_PTR
+            CODE    087CH     000FH     UNIT         ?PR?DELAY?LCD_FUN_PTR
+            CODE    088BH     000FH     UNIT         ?CO?LCD_FUN_PTR
+            CODE    089AH     000EH     UNIT         ?PR?_DISPLAY_DATA?LCD_FUN_PTR
+            CODE    08A8H     000EH     UNIT         ?PR?_DISPLAY_CMD?LCD_FUN_PTR
+            CODE    08B6H     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\lcd2 (LCD_FUN_PTR)
+
+
+SEGMENT                                 DATA_GROUP 
+  +--> CALLED SEGMENT                 START    LENGTH
+-----------------------------------------------------
+?C_C51STARTUP                         -----    -----
+  +--> ?PR?MAIN?LCD_FUN_PTR
+
+?PR?MAIN?LCD_FUN_PTR                  -----    -----
+  +--> ?PR?LCD_INIT?LCD_FUN_PTR
+  +--> ?CO?LCD_FUN_PTR
+  +--> ?PR?_PRINT_LCD?LCD_FUN_PTR
+  +--> ?PR?DELAY?LCD_FUN_PTR
+  +--> ?PR?_DISPLAY_CMD?LCD_FUN_PTR
+
+?PR?LCD_INIT?LCD_FUN_PTR              -----    -----
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/08/2019  12:53:45  PAGE 2
+
+
+  +--> ?PR?_DISPLAY_CMD?LCD_FUN_PTR
+
+?PR?_DISPLAY_CMD?LCD_FUN_PTR          -----    -----
+  +--> ?PR?DELAY?LCD_FUN_PTR
+
+?PR?_PRINT_LCD?LCD_FUN_PTR            000BH    0003H
+  +--> ?PR?_DISPLAY_DATA?LCD_FUN_PTR
+
+?PR?_DISPLAY_DATA?LCD_FUN_PTR         -----    -----
+  +--> ?PR?DELAY?LCD_FUN_PTR
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\lcd2 (LCD_FUN_PTR)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        LCD_FUN_PTR
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:00A0H         PUBLIC        P2
+  C:08A8H         PUBLIC        _display_cmd
+  C:087CH         PUBLIC        delay
+  C:0800H         PUBLIC        main
+  D:0008H         PUBLIC        fptr
+  C:0826H         PUBLIC        _print_lcd
+  C:0868H         PUBLIC        lcd_init
+  B:0080H.3       PUBLIC        en
+  B:0080H.2       PUBLIC        rs
+  C:089AH         PUBLIC        _display_data
+  -------         PROC          MAIN
+  -------         DO            
+  D:0001H         SYMBOL        fptr
+  -------         ENDDO         
+  C:0800H         LINE#         14
+  C:0800H         LINE#         15
+  C:0800H         LINE#         20
+  C:0804H         LINE#         21
+  C:0807H         LINE#         22
+  C:0810H         LINE#         23
+  C:0813H         LINE#         24
+  C:0818H         LINE#         25
+  C:0821H         LINE#         26
+  C:0824H         LINE#         27
+  -------         ENDPROC       MAIN
+  -------         PROC          _DISPLAY_DATA
+  D:0007H         SYMBOL        ver
+  C:089AH         LINE#         33
+  C:089AH         LINE#         34
+  C:089AH         LINE#         35
+  C:089CH         LINE#         36
+  C:089EH         LINE#         37
+  C:08A0H         LINE#         38
+  C:08A3H         LINE#         39
+  C:08A5H         LINE#         40
+  -------         ENDPROC       _DISPLAY_DATA
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/08/2019  12:53:45  PAGE 3
+
+
+  -------         PROC          _DISPLAY_CMD
+  D:0007H         SYMBOL        ver
+  C:08A8H         LINE#         42
+  C:08A8H         LINE#         43
+  C:08A8H         LINE#         44
+  C:08AAH         LINE#         45
+  C:08ACH         LINE#         46
+  C:08AEH         LINE#         47
+  C:08B1H         LINE#         48
+  C:08B3H         LINE#         49
+  -------         ENDPROC       _DISPLAY_CMD
+  -------         PROC          DELAY
+  -------         DO            
+  D:0006H         SYMBOL        i
+  -------         ENDDO         
+  C:087CH         LINE#         54
+  C:087CH         LINE#         55
+  C:087CH         LINE#         57
+  C:088AH         LINE#         58
+  -------         ENDPROC       DELAY
+  -------         PROC          LCD_INIT
+  C:0868H         LINE#         62
+  C:0868H         LINE#         63
+  C:0868H         LINE#         64
+  C:086DH         LINE#         65
+  C:0872H         LINE#         66
+  C:0877H         LINE#         68
+  -------         ENDPROC       LCD_INIT
+  -------         PROC          _PRINT_LCD
+  D:000BH         SYMBOL        ptr
+  C:0826H         LINE#         73
+  C:082CH         LINE#         74
+  C:082CH         LINE#         75
+  C:0838H         LINE#         76
+  C:0838H         LINE#         77
+  C:083BH         LINE#         78
+  C:0846H         LINE#         79
+  C:0848H         LINE#         80
+  -------         ENDPROC       _PRINT_LCD
+  -------         ENDMOD        LCD_FUN_PTR
+
+  -------         MODULE        ?C?CLDPTR
+  C:0849H         PUBLIC        ?C?CLDPTR
+  -------         ENDMOD        ?C?CLDPTR
+
+  -------         MODULE        ?C?ICALL
+  C:0862H         PUBLIC        ?C?ICALL
+  C:0866H         PUBLIC        ?C?ICALL2
+  -------         ENDMOD        ?C?ICALL
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0097H BYTE ( 7%) *
+******************************************************************************
+
+Program Size: data=15.0 xdata=0 code=197
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
