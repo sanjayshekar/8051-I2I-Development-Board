@@ -1,0 +1,94 @@
+C51 COMPILER V9.57.0.0   ADC                                                               01/19/2019 15:45:27 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE ADC
+OBJECT MODULE PLACED IN .\Objects\adc.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE adc.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\adc.l
+                    -st) TABS(2) OBJECT(.\Objects\adc.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          #include "prototype.h"
+   3          void display_decimal(int var);
+   4          void display_float_number(float var);
+   5          #define ADC_IN P3
+   6          #define LED_OP P2
+   7          
+   8          void delay(int num);
+   9          sbit INTR=P1^0;
+  10          sbit SOC=P1^1;
+  11          sbit EOC=P1^2;
+  12          sbit CS=P1^3;
+  13          int var;
+  14          
+  15          float adcConversion(void)
+  16          {
+  17   1        float temp;
+  18   1          CS=0;
+  19   1          EOC=1;
+  20   1          SOC=0;
+  21   1          delay(30);
+  22   1          SOC=1;
+  23   1          while(INTR==0);
+  24   1          EOC=0;
+  25   1        temp=ADC_IN*0.019;
+  26   1          return temp;
+  27   1      }
+  28          
+  29          void main()
+  30          {
+  31   1        float temp1;
+  32   1        lcd_init();
+  33   1        while(1)
+  34   1        {
+  35   2          temp1 = adcConversion();
+  36   2          
+  37   2          delay(10);
+  38   2          display_float_number(temp1);
+  39   2        }
+  40   1      }
+  41           void display_float_number(float var)
+  42          {
+  43   1        float temp;
+  44   1        int i=var;
+  45   1        display_cmd(0x80);
+  46   1        print_lcd("ADC vltg=");
+  47   1        display_data(i+48);
+  48   1        display_data('.');
+  49   1       temp=var-i;
+  50   1        i=temp*100;
+  51   1        display_decimal(i);
+  52   1        
+  53   1      } 
+  54          void display_decimal(int var)
+C51 COMPILER V9.57.0.0   ADC                                                               01/19/2019 15:45:27 PAGE 2   
+
+  55          {
+  56   1      display_data(var/10+48);
+  57   1        display_data(var%10+48);
+  58   1      }
+  59          void delay(int num)//1ms
+  60          {
+  61   1        int i=0,j=0;
+  62   1        for( i=0;i<num;i++)
+  63   1        {
+  64   2          for( j=0; j<1275; j++);
+  65   2        }
+  66   1      }
+  67          
+  68          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    250    ----
+   CONSTANT SIZE    =     10    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2      16
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

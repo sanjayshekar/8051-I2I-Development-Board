@@ -1,0 +1,117 @@
+C51 COMPILER V9.57.0.0   ADC_TEMP_SENSOR                                                   05/09/2019 13:42:10 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE ADC_TEMP_SENSOR
+OBJECT MODULE PLACED IN .\Objects\adc_temp_sensor.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE adc_temp_sensor.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Li
+                    -stings\adc_temp_sensor.lst) TABS(2) OBJECT(.\Objects\adc_temp_sensor.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          #include "prototype.h"
+   3          
+   4          #define ADC_IN P3
+   5          #define LED_OP P2
+   6          
+   7          void display_decimal(int var);
+   8          void display_float_number(float var);
+   9          void data_display(int degree);
+  10          void delay(int num);
+  11          
+  12          sbit INTR=P1^0;
+  13          sbit SOC=P1^1;
+  14          sbit EOC=P1^2;
+  15          sbit CS=P1^3;
+  16          
+  17          int var;
+  18          
+  19          float adcConversion(void)
+  20          {
+  21   1          float temp;
+  22   1          CS=0;
+  23   1          EOC=1;
+  24   1          SOC=0; 
+  25   1          delay(1);
+  26   1          SOC=1;
+  27   1          while(INTR==0);
+  28   1          EOC=0;
+  29   1          temp=ADC_IN*0.019;
+  30   1        
+  31   1          return temp;
+  32   1      }
+  33          
+  34          void main()
+  35          {
+  36   1        float degree;
+  37   1        float temp1;
+  38   1        lcd_init();
+  39   1        while(1)
+  40   1        {
+  41   2          temp1 = adcConversion();
+  42   2          display_cmd(0x80);
+  43   2          print_lcd("adc vltg=");
+  44   2          display_float_number(temp1);
+  45   2          display_data('v');
+  46   2          
+  47   2          
+  48   2          display_cmd(0xc0);
+  49   2          print_lcd("temp=");
+  50   2          degree= temp1*100;  
+  51   2          data_display(degree);
+  52   2        
+  53   2        }
+  54   1      }
+C51 COMPILER V9.57.0.0   ADC_TEMP_SENSOR                                                   05/09/2019 13:42:10 PAGE 2   
+
+  55          void data_display(int degree)
+  56          {
+  57   1        int temp,temp1=0,temp2=0,temp3=0;
+  58   1        temp=degree/100;
+  59   1        temp1=degree%100;
+  60   1        display_data(temp+48);
+  61   1        temp2=temp1/10;
+  62   1        display_data(temp2+48);
+  63   1        temp3=temp1%10;
+  64   1        display_data(temp3+48);
+  65   1        
+  66   1      }   
+  67           void display_float_number(float var)
+  68          {
+  69   1        float temp;
+  70   1        int i=var;
+  71   1        
+  72   1        display_data(i+48);
+  73   1        display_data('.');
+  74   1        temp=var-i;
+  75   1        i=temp*100;
+  76   1        display_decimal(i);
+  77   1        
+  78   1      } 
+  79          void display_decimal(int var)
+  80          {
+  81   1        display_data(var/10+48);
+  82   1        display_data(var%10+48);
+  83   1      }
+  84          void delay(int num)//1ms
+  85          {
+  86   1        int i=0,j=0;
+  87   1        for( i=0;i<num;i++)
+  88   1        {
+  89   2          for( j=0; j<1275; j++);
+  90   2        }
+  91   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    374    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2      22
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

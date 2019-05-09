@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\lcd.obj",
+".\Objects\adc_temp_sensor.obj" 
+TO ".\Objects\adc" 
+PRINT(".\Listings\adc.m51") RAMSIZE(256) 
