@@ -1,0 +1,208 @@
+C51 COMPILER V9.57.0.0   EPROM_STRING                                                      05/09/2019 13:38:08 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE EPROM_STRING
+OBJECT MODULE PLACED IN .\Objects\EPROM_STRING.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE EPROM_STRING.C OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listi
+                    -ngs\EPROM_STRING.lst) TABS(2) OBJECT(.\Objects\EPROM_STRING.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          #include "lcd.h"
+   3          
+   4          sbit SDA=P2^0;
+   5          sbit SCL=P2^1;
+   6          
+   7          void i2c_start(void);
+   8          void i2c_stop(void);
+   9          void i2c_write(char var);
+  10          char i2c_read(void);
+  11          char i2c_write_ack(char var);
+  12          void i2c_readack(void);
+  13          void i2c_nack(void);
+  14          void i2c_delay(void);
+  15          void i2c_write_eprom(void);
+  16          void i2c_write_string(char *var);
+  17          void i2c_read_string(void);
+  18          
+  19          char string[20]={0};
+  20          
+  21          void main(void)
+  22          {
+  23   1        lcd_init();
+  24   1        set_curs(1, 0);
+  25   1        lcd_print("eprom testing");
+  26   1        msdelay(20);
+  27   1        i2c_write_eprom();
+  28   1        i2c_read_string();
+  29   1        while(1);
+  30   1      }
+  31          
+  32          
+  33          void i2c_start(void)
+  34          {
+  35   1        SDA=1;
+  36   1        SCL=1;
+  37   1        i2c_delay();
+  38   1        SDA=0;
+  39   1        i2c_delay();
+  40   1        SCL=0;
+  41   1      }
+  42          
+  43          
+  44          void i2c_stop(void)
+  45          {
+  46   1        SDA=0;
+  47   1        SCL=1;
+  48   1        i2c_delay();
+  49   1        SDA=1;
+  50   1        i2c_delay();
+  51   1        SCL=0;
+  52   1      }
+  53          
+  54          
+C51 COMPILER V9.57.0.0   EPROM_STRING                                                      05/09/2019 13:38:08 PAGE 2   
+
+  55          void i2c_write(char var)
+  56          {
+  57   1        char i, check_ack=1;
+  58   1        for(i=0;i<5;i++)
+  59   1          {
+  60   2            check_ack=i2c_write_ack(var);
+  61   2            if(check_ack==0)
+  62   2            return;
+  63   2          }
+  64   1      }
+  65          
+  66          
+  67          char i2c_write_ack(char var)
+  68          {
+  69   1        char i,ack,temp=0x80;
+  70   1        for(i=0;i<8;i++)
+  71   1          {
+  72   2            SDA=(var & temp);
+  73   2            i2c_delay();
+  74   2            SCL=1;
+  75   2            i2c_delay();          
+  76   2            SCL=0;                
+  77   2            var=var<<1;
+  78   2          }
+  79   1            SDA=1;
+  80   1            i2c_delay();
+  81   1            SCL=1;
+  82   1            i2c_delay();
+  83   1            ack=SDA;
+  84   1            SCL=0;
+  85   1            return ack;
+  86   1      }
+  87          
+  88          
+  89          char i2c_read(void)
+  90          {
+  91   1        char i=0,temp=0;
+  92   1        for(i=0;i<8;i++)
+  93   1          {   
+  94   2            temp=temp<<1;     
+  95   2            temp=temp| SDA;
+  96   2            SCL=1;
+  97   2            i2c_delay();
+  98   2            SCL=0;
+  99   2            i2c_delay();
+ 100   2          }
+ 101   1            return temp;
+ 102   1      }
+ 103          
+ 104          
+ 105          void i2c_readack(void)
+ 106          {
+ 107   1        SDA=0;
+ 108   1        SCL=1;
+ 109   1        i2c_delay();
+ 110   1        SCL=0;
+ 111   1        i2c_delay();
+ 112   1        SDA=1;
+ 113   1      }
+ 114          
+ 115          
+ 116          void i2c_nack(void)
+C51 COMPILER V9.57.0.0   EPROM_STRING                                                      05/09/2019 13:38:08 PAGE 3   
+
+ 117          {
+ 118   1        SDA=1;
+ 119   1        i2c_delay();
+ 120   1        SCL=1;
+ 121   1        i2c_delay();
+ 122   1        SCL=0;
+ 123   1        SDA=1;
+ 124   1      }
+ 125          
+ 126          
+ 127          void i2c_delay(void)
+ 128          {
+ 129   1        char i;
+ 130   1        for(i=0;i<=1;i++);
+ 131   1      }
+ 132          
+ 133          
+ 134          void i2c_write_eprom(void)
+ 135          {
+ 136   1        char ack=0;
+ 137   1        i2c_start();
+ 138   1        i2c_write(0xA0);
+ 139   1        i2c_write(0x00);
+ 140   1        i2c_write_string("EEPROM TESTING");
+ 141   1        i2c_stop();
+ 142   1      }
+ 143          
+ 144          
+ 145          void i2c_write_string(char *var)
+ 146          {
+ 147   1        while(*var != '\0')
+ 148   1          {
+ 149   2            i2c_write(*var);
+ 150   2            var++;
+ 151   2          }
+ 152   1          i2c_write('\0');
+ 153   1      }
+ 154          
+ 155          
+ 156          void i2c_read_string(void)
+ 157          {
+ 158   1        char i=0,j=0,ack=0;
+ 159   1        i2c_start();
+ 160   1        i2c_write(0xA0);         //device address
+ 161   1        i2c_write(0x00);         //mem add
+ 162   1        i2c_start();             //read
+ 163   1        i2c_write(0xA1);         //device add/read
+ 164   1        
+ 165   1          do
+ 166   1          {
+ 167   2            string[i] = i2c_read();
+ 168   2            i++;
+ 169   2            i2c_readack();
+ 170   2          }while(string[i-1] != '\0');
+ 171   1      
+ 172   1          i2c_nack();
+ 173   1          i2c_stop();
+ 174   1          lcd_cmd(0x01);
+ 175   1          lcd_print(string);
+ 176   1          msdelay(10);
+ 177   1          lcd_cmd(0x0c);
+ 178   1      }
+C51 COMPILER V9.57.0.0   EPROM_STRING                                                      05/09/2019 13:38:08 PAGE 4   
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    382    ----
+   CONSTANT SIZE    =     29    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     20      14
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

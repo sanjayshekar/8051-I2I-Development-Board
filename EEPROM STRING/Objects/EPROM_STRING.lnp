@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\EPROM_STRING.obj",
+".\Objects\LCD.obj" 
+TO ".\Objects\EPROM_STRING" 
+PRINT(".\Listings\EPROM_STRING.m51") RAMSIZE(256) 

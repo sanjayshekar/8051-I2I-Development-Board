@@ -1,0 +1,112 @@
+C51 COMPILER V9.57.0.0   LCD                                                               05/09/2019 13:38:09 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE LCD
+OBJECT MODULE PLACED IN .\Objects\LCD.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE LCD.C OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\LCD.l
+                    -st) TABS(2) OBJECT(.\Objects\LCD.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          #include "lcd.h"
+   3          
+   4          sbit rs=P0^2;
+   5          sbit rw=P0^1;
+   6          sbit en=P0^3;
+   7          
+   8          
+   9          void lcd_print(char *ptr) //to print string
+  10          {
+  11   1        while(*ptr!='\0')
+  12   1        {
+  13   2          lcd_data(*ptr);
+  14   2          ptr++;
+  15   2        } 
+  16   1      }
+  17          
+  18          
+  19          
+  20          void  lcd_init(void)    //to initilaise lcd
+  21          {
+  22   1          lcd_cmd(0x38);      //
+  23   1          delay();
+  24   1          lcd_cmd(0x0E);
+  25   1          delay();
+  26   1          lcd_cmd(0x01);
+  27   1          delay();
+  28   1          lcd_cmd(0x06);
+  29   1          delay();
+  30   1          lcd_cmd(0x80);
+  31   1          delay();    
+  32   1      }
+  33              
+  34          
+  35            
+  36          void lcd_cmd(char var)    //to send command 
+  37          { 
+  38   1          P2=var;
+  39   1          rs=0;
+  40   1          rw=0;
+  41   1          en=1;
+  42   1          delay();
+  43   1          en=0;
+  44   1          delay();
+  45   1      }
+  46              
+  47              
+  48          void lcd_data(char var)  //to send dataa
+  49          {
+  50   1          P2=var;
+  51   1          rs=1;
+  52   1          rw=0;
+  53   1          en=1;
+  54   1          delay();
+C51 COMPILER V9.57.0.0   LCD                                                               05/09/2019 13:38:09 PAGE 2   
+
+  55   1          en=0;
+  56   1          delay();
+  57   1      }
+  58              
+  59            
+  60          void msdelay (unsigned int x)   //to give some delay
+  61          {
+  62   1          int i,j;
+  63   1          for(j=0;j<x;j++)
+  64   1          for(i=0;i<=1275;i++);
+  65   1      }
+  66            
+  67            
+  68          void set_curs(int x,int y)
+  69          {
+  70   1          if(x==1)
+  71   1          {
+  72   2            lcd_cmd(0x80+y);
+  73   2          }
+  74   1          if(x==2)
+  75   1          {
+  76   2            lcd_cmd(0xc0+y);
+  77   2          }
+  78   1      }
+  79            
+  80            
+  81          void delay(void)
+  82          {
+  83   1          int i;
+  84   1          for(i=0;i<1000;i++);
+  85   1      }
+  86            
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    195    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       7
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
