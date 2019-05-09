@@ -1,0 +1,91 @@
+C51 COMPILER V9.57.0.0   I2C_EXAMPLE                                                       01/04/2019 12:48:48 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE I2C_EXAMPLE
+OBJECT MODULE PLACED IN .\Objects\i2c_example.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE i2c_example.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listin
+                    -gs\i2c_example.lst) TABS(2) OBJECT(.\Objects\i2c_example.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include "prototype.h"
+   3          char temp=0;
+   4          char Te=0;
+   5          sbit SDA=P0^1;
+   6          sbit SCL=P0^0;
+   7          
+   8          
+   9          void main()
+  10          {
+  11   1        lcd_init();
+  12   1        start_bit();
+  13   1        Te=send_i2c(0XD0);
+  14   1        
+  15   1        if(Te==0)
+  16   1        {
+  17   2          print_lcd("ack received");
+  18   2        }
+  19   1          else
+  20   1          {
+  21   2            print_lcd("ack not received");  
+  22   2      }
+  23   1          }
+  24          void start_bit(void)
+  25          {
+  26   1        SDA=1;
+  27   1        SCL=1;
+  28   1        delay1();
+  29   1        SDA=0;
+  30   1        SCL=0;  
+  31   1      }
+  32          
+  33          
+  34          
+  35          
+  36          char send_i2c(char var)
+  37          {
+  38   1        int i=0;
+  39   1        for(i=0; i<8;i++)
+  40   1        {
+  41   2          SDA=((var << i) & 0x80);
+  42   2            SCL=1;
+  43   2            delay1();
+  44   2            SCL=0;
+  45   2        }
+  46   1        SDA=1;
+  47   1        SCL=1;
+  48   1        delay1();
+  49   1        SCL=0;
+  50   1        if(SDA==0)
+  51   1        {
+  52   2          return SDA;
+  53   2        }
+  54   1        else
+C51 COMPILER V9.57.0.0   I2C_EXAMPLE                                                       01/04/2019 12:48:48 PAGE 2   
+
+  55   1        {
+  56   2          return SDA;
+  57   2        }
+  58   1        
+  59   1      }
+  60              
+  61          void delay1(void)
+  62          {
+  63   1        int i=0;
+  64   1        for(i=0;i<500;i++);
+  65   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    137    ----
+   CONSTANT SIZE    =     30    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

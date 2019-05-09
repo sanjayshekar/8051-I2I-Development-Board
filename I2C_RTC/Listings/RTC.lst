@@ -1,0 +1,245 @@
+C51 COMPILER V9.57.0.0   RTC                                                               05/09/2019 13:33:24 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE RTC
+OBJECT MODULE PLACED IN .\Objects\RTC.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE RTC.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\RTC.l
+                    -st) TABS(2) OBJECT(.\Objects\RTC.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          #include "prototype.h"
+   3          
+   4          sbit SDA=P0^1;
+   5          sbit SCL=P0^0;
+   6          
+   7          char sec,min,hr;
+   8          char  temp;
+   9          char temp1;
+  10          
+  11          void main()
+  12          {
+  13   1         lcdInit();
+  14   1         startBit();
+  15   1         temp=sendI2c(0xD0);
+  16   1         lcdData(temp);
+  17   1         sendI2c(0x00);
+  18   1         sendI2c(decBcd(45));
+  19   1         sendI2c(decBcd(59));
+  20   1         sendI2c(decBcd(11));
+  21   1         stopBit();
+  22   1      
+  23   1         while(1)
+  24   1         {
+  25   2            startBit();
+  26   2            sendI2c(0xD0);
+  27   2            sendI2c(0x00);
+  28   2            startBit();
+  29   2            sendI2c(0xD1);
+  30   2            sec=readI2c();
+  31   2            readAck();
+  32   2           
+  33   2            min=readI2c();
+  34   2            readAck();
+  35   2           
+  36   2            hr=readI2c();
+  37   2            lcdCmd(0x80);
+  38   2            lcdDigit(bcdDec(hr));
+  39   2            lcdData(':');
+  40   2           
+  41   2            lcdDigit(bcdDec(min));
+  42   2            lcdData(':');
+  43   2      
+  44   2            lcdDigit(bcdDec(sec));
+  45   2      
+  46   2          }
+  47   1      
+  48   1      }
+  49          
+  50          char displayAmpm(char hr)
+  51          {
+  52   1        char hr2,ampm1;
+  53   1        hr2 = hr & 0x1f;
+  54   1        ampm1 = hr & 0x20;
+C51 COMPILER V9.57.0.0   RTC                                                               05/09/2019 13:33:24 PAGE 2   
+
+  55   1        if(ampm1 == 0x20)
+  56   1          {
+  57   2            lcdData('A');
+  58   2          }
+  59   1        else if(ampm1 == 0x00)
+  60   1          {
+  61   2            lcdData('P');
+  62   2          }
+  63   1         lcdData('m');
+  64   1         return hr2;
+  65   1      }
+  66          void i2cStop(void)
+  67          {
+  68   1        SDA=0;
+  69   1        SCL=1;
+  70   1        delay();
+  71   1        SDA=1;
+  72   1        delay();
+  73   1        SCL=0;
+  74   1      }
+  75          
+  76          char readI2c(void)
+  77          {
+  78   1        char k,temp=0;
+  79   1        for(k=0;k<8;k++)
+  80   1        {
+  81   2          temp=temp<<1;
+  82   2          temp=temp | SDA;
+  83   2          SCL=1;
+  84   2          delay();
+  85   2          SCL=0;
+  86   2        }
+  87   1        return temp;
+  88   1      }
+  89          
+  90          char sendI2c(char var)
+  91          {
+  92   1        int j;
+  93   1        for(j=0;j<8;j++)
+  94   1        {
+  95   2            SDA=((var<<j)& 0x80);
+  96   2            SCL=1;
+  97   2            delay1();
+  98   2            SCL=0;
+  99   2        }
+ 100   1         SDA=1;
+ 101   1         SCL=1;
+ 102   1         delay();
+ 103   1         SCL=0;
+ 104   1         if(SDA==0)
+ 105   1           return SDA;
+ 106   1         else
+ 107   1          return SDA;
+ 108   1      }
+ 109          
+ 110          void startBit(void)
+ 111          {
+ 112   1        SDA=1;
+ 113   1        SCL=1;
+ 114   1        delay();
+ 115   1        SDA=0;
+ 116   1        delay();
+C51 COMPILER V9.57.0.0   RTC                                                               05/09/2019 13:33:24 PAGE 3   
+
+ 117   1        SCL=0;  
+ 118   1      }
+ 119          void stopBit(void)
+ 120          {
+ 121   1        SDA=0;
+ 122   1        SCL=1;
+ 123   1        delay();
+ 124   1        SDA=1;
+ 125   1        delay();
+ 126   1        SCL=0;
+ 127   1      }
+ 128          
+ 129          char bcdDec(char var)
+ 130          {
+ 131   1          char temp1=0,temp2=0;
+ 132   1          temp1=var & 0xf0;
+ 133   1          temp1=temp1>>4;
+ 134   1          temp2=var & 0x0f;
+ 135   1          temp1=(temp1*10)+temp2;
+ 136   1          return temp1;
+ 137   1      }
+ 138          char decBcd(char dec)
+ 139          {
+ 140   1        return( (dec/10*16) + (dec%10) );
+ 141   1      }
+ 142          void lcdDigit(char var)
+ 143          {
+ 144   1          char temp;
+ 145   1          temp=var/10;
+ 146   1          lcdData(temp+48);
+ 147   1          temp=var%10;
+ 148   1          lcdData(temp+48);
+ 149   1      }
+ 150          void readAck(void)
+ 151          {
+ 152   1        SDA=0;
+ 153   1        SCL=1;
+ 154   1        delay();
+ 155   1        SCL=0;
+ 156   1        delay();
+ 157   1        SDA=1;
+ 158   1      }
+ 159          void displayDate(char date, char month, char year, char day)
+ 160          {
+ 161   1        lcdCmd(0xC0);
+ 162   1        lcdPrint("Date:");
+ 163   1      
+ 164   1        switch(day)
+ 165   1          {
+ 166   2            case 0x00: lcdPrint("su"); break;
+ 167   2            case 0x01: lcdPrint("mn"); break;
+ 168   2            case 0x02: lcdPrint("tu"); break;
+ 169   2            case 0x03: lcdPrint("we"); break;
+ 170   2            case 0x04: lcdPrint("th"); break;
+ 171   2            case 0x05: lcdPrint("fr"); break;
+ 172   2            case 0x06: lcdPrint("sa"); break;
+ 173   2            default: break;
+ 174   2          }
+ 175   1          lcdCmd(0x80);
+ 176   1          lcdDigit(bcdDec(date));
+ 177   1          lcdData('/');
+ 178   1          lcdDigit(bcdDec(month));
+C51 COMPILER V9.57.0.0   RTC                                                               05/09/2019 13:33:24 PAGE 4   
+
+ 179   1          lcdData('/');   
+ 180   1          lcdDigit(bcdDec(year));   
+ 181   1      }
+ 182          void readDate(void)
+ 183          {
+ 184   1        char day,date,month,year;
+ 185   1        startBit();
+ 186   1        sendI2c(0xD0);
+ 187   1        sendI2c(0x03);
+ 188   1        startBit();
+ 189   1        sendI2c(0xD1);
+ 190   1        
+ 191   1        day=readI2c();
+ 192   1        readAck();
+ 193   1        
+ 194   1        date=readI2c();
+ 195   1        readAck();
+ 196   1        
+ 197   1        month=readI2c();
+ 198   1        readAck();
+ 199   1        
+ 200   1        year=readI2c();
+ 201   1        displayDate(date, month, year, day);
+ 202   1      }
+ 203          
+ 204          void setDate(char day, char date, char month, char year)
+ 205          {
+ 206   1        startBit();
+ 207   1        sendI2c(0xD0);
+ 208   1        sendI2c(0x03);
+ 209   1        sendI2c(day & 0x07);
+ 210   1        sendI2c(decBcd(date) & 0x3f);
+ 211   1        sendI2c(decBcd(month) & 0x1f);
+ 212   1        sendI2c(decBcd(year) & 0xff);
+ 213   1        i2cStop();
+ 214   1      }
+ 215          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    692    ----
+   CONSTANT SIZE    =     27    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5      19
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
